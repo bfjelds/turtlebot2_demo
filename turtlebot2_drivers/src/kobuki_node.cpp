@@ -38,8 +38,10 @@
 #include "nav_msgs/msg/odometry.hpp"
 #include "rcutils/logging_macros.h"
 #include "sensor_msgs/msg/imu.hpp"
+#ifdef BROADCAST_TO_TF2
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2_ros/transform_broadcaster.h"
+#endif
 
 static kobuki::Kobuki * g_kobuki;
 static std::mutex g_kobuki_mutex;
@@ -83,7 +85,9 @@ int main(int argc, char * argv[])
     "cmd_vel", cmdVelCallback, cmd_vel_qos_profile);
   auto odom_pub = node->create_publisher<nav_msgs::msg::Odometry>("odom", odom_and_imu_qos_profile);
   auto imu_pub = node->create_publisher<sensor_msgs::msg::Imu>("imu", odom_and_imu_qos_profile);
+#ifdef BROADCAST_TO_TF2
   tf2_ros::TransformBroadcaster br(node);
+#endif
 
   kobuki::Parameters parameters;
 #ifndef _WIN32
